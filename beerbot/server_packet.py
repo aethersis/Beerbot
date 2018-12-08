@@ -2,15 +2,18 @@ import pickle
 
 
 class ServerPacket:
-    def __init__(self):
-        self._camera_yaw = 0.0
-        self._camera_pitch = 0.0
-        self._robot_yaw = 0.0
-        self._robot_speed = 0.0
-
+    def __init__(self, raw_data: bytes = None):
         #  this value is guaranteed to be smaller than int on pretty much any reasonable architecture
         #  at the same time, the precission is sufficiently high to keep everything smooth and keep packet small
         self._resolution = 65535
+
+        if raw_data is not None:
+            self.deserialize(raw_data)
+        else:
+            self._camera_yaw = 0.0
+            self._camera_pitch = 0.0
+            self._robot_yaw = 0.0
+            self._robot_speed = 0.0
 
     def _from_int(self, value: int) -> float:
         return value / float(self._resolution)

@@ -44,9 +44,16 @@ class TestServerPacket(unittest.TestCase):
         packet.robot_yaw = -0.1
         packet.robot_speed = -0.5
 
+        packets = list()
         serialized = packet.serialize()
         packet.deserialize(serialized)
-        self.assertAlmostEqual(packet.camera_yaw, 0.2, 4)
-        self.assertAlmostEqual(packet.camera_pitch, 0.3, 4)
-        self.assertAlmostEqual(packet.robot_yaw, -0.1, 4)
-        self.assertAlmostEqual(packet.robot_speed, -0.5, 4)
+
+        # both the constructor and deserialize method should give the same results and work correctly
+        packets.append(packet)
+        packets.append(ServerPacket(serialized))
+
+        for packet in packets:
+            self.assertAlmostEqual(packet.camera_yaw, 0.2, 4)
+            self.assertAlmostEqual(packet.camera_pitch, 0.3, 4)
+            self.assertAlmostEqual(packet.robot_yaw, -0.1, 4)
+            self.assertAlmostEqual(packet.robot_speed, -0.5, 4)

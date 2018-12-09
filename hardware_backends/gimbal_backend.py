@@ -38,7 +38,7 @@ class DummyGimbalBackend(AbstractGimbalBackend):
 
 
 class SG90ServoGimbalBackend(AbstractGimbalBackend):
-    def __init__(self, yaw_pin=18, pitch_pin=19):
+    def __init__(self, yaw_pin=20, pitch_pin=21):
         if not is_raspberry_pi():
             raise Exception("This class works only on Raspberry Pi")
 
@@ -51,11 +51,11 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         wiringpi.wiringPiSetupGpio()
         wiringpi.pinMode(yaw_pin, wiringpi.GPIO.OUTPUT)
         wiringpi.pinMode(pitch_pin, wiringpi.GPIO.OUTPUT)
-        wiringpi.softPwmCreate(yaw_pin, 50, 100)
-        wiringpi.softPwmCreate(pitch_pin, 50, 100)
+        wiringpi.softPwmCreate(yaw_pin, 0, 100)
+        wiringpi.softPwmCreate(pitch_pin, 0, 100)
 
     def _valueToPwm(self, value: float) -> int:
-        return int(100 * (value + 1.0)/2.0)
+        return int(100.0 * (value + 1.0)/2.0)
 
     @property
     def pitch(self):
@@ -70,11 +70,11 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         import wiringpi
         validate_value(value, 'Camera yaw')
         self._yaw = value
-        wiringpi.pwmWrite(self._yaw_pin, self._valueToPwm(value))
+        wiringpi.softPwmWrite(self._yaw_pin, self._valueToPwm(value))
 
     @pitch.setter
     def pitch(self, value: float):
         import wiringpi
         validate_value(value, 'Camera pitch')
         self._pitch = value
-        wiringpi.pwmWrite(self._pitch_pin, self._valueToPwm(value))
+        wiringpi.softPwmWrite(self._pitch_pin, self._valueToPwm(value))

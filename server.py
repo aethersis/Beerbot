@@ -26,8 +26,8 @@ class RobotServer:
                     self._gimbal_backend.pitch = packet.camera_pitch
 
                     print(packet)
-                except Exception:
-                    print("Data transmission error!")
+                except Exception as e:
+                    print("Data transmission error: " + e.__str__())
                     self._fail_safe_mode()
             else:
                 self._fail_safe_mode()

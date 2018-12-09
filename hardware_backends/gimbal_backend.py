@@ -1,6 +1,6 @@
 from abc import *
 
-from utilities import is_raspberry_pi
+from utilities import is_raspberry_pi, validate_value
 
 
 class AbstractGimbalBackend(ABC):
@@ -69,13 +69,13 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
     @yaw.setter
     def yaw(self, value: float):
         import wiringpi
-        self._validate_value(value, 'Camera yaw')
+        validate_value(value, 'Camera yaw')
         self._yaw = value
         wiringpi.pwmWrite(self._yaw_pin, self._valueToPwm(value))
 
     @pitch.setter
     def pitch(self, value: float):
         import wiringpi
-        self._validate_value(value, 'Camera pitch')
+        validate_value(value, 'Camera pitch')
         self._pitch = value
         wiringpi.pwmWrite(self._pitch_pin, self._valueToPwm(value))

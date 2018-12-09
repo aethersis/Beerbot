@@ -1,11 +1,11 @@
 import unittest
 
-from beerbot.server_packet import ServerPacket
+from beerbot.server_packet import ControllerPacket
 
 
 class TestServerPacket(unittest.TestCase):
     def test_that_raises_for_out_of_bounds(self):
-        packet = ServerPacket()
+        packet = ControllerPacket()
 
         with self.assertRaises(ValueError):
             packet.camera_pitch = 1.01
@@ -25,7 +25,7 @@ class TestServerPacket(unittest.TestCase):
             packet.robot_yaw = -1.01
 
     def test_that_works_for_values_within_bounds(self):
-        packet = ServerPacket()
+        packet = ControllerPacket()
 
         # If no exception is raised, the test passes
         packet.camera_pitch = 1
@@ -38,7 +38,7 @@ class TestServerPacket(unittest.TestCase):
         packet.robot_yaw = -1
 
     def test_that_can_be_serialized_and_deserialized_properly(self):
-        packet = ServerPacket()
+        packet = ControllerPacket()
         packet.camera_yaw = 0.2
         packet.camera_pitch = 0.3
         packet.robot_yaw = -0.1
@@ -50,7 +50,7 @@ class TestServerPacket(unittest.TestCase):
 
         # both the constructor and deserialize method should give the same results and work correctly
         packets.append(packet)
-        packets.append(ServerPacket(serialized))
+        packets.append(ControllerPacket(serialized))
 
         for packet in packets:
             self.assertAlmostEqual(packet.camera_yaw, 0.2, 4)

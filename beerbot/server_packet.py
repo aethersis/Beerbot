@@ -1,7 +1,7 @@
 import pickle
 
 
-class ServerPacket:
+class ControllerPacket:
     def __init__(self, raw_data: bytes = None):
         #  this value is guaranteed to be smaller than int on pretty much any reasonable architecture
         #  at the same time, the precission is sufficiently high to keep everything smooth and keep packet small

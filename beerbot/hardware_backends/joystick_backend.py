@@ -1,7 +1,7 @@
 from threading import Thread
 import pygame
 
-from beerbot.controller_backends.abstract_backend import AbstractControllerBackend
+from beerbot.hardware_backends.abstract_backend import AbstractControllerBackend
 
 
 class JoystickBackend(AbstractControllerBackend):

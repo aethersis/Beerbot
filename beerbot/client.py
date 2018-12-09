@@ -3,8 +3,8 @@ import argparse
 import socket
 import sys
 
-from beerbot.controller_backends.abstract_backend import AbstractControllerBackend
-from beerbot.controller_backends.joystick_backend import JoystickBackend
+from beerbot.hardware_backends.abstract_backend import AbstractControllerBackend
+from beerbot.hardware_backends.joystick_backend import JoystickBackend
 from beerbot.server_packet import ControllerPacket
 
 SEND_INTERVAL = 0.05  # send control signal every 50ms (20 fps)
@@ -31,9 +31,14 @@ connection.connect((args.host, args.port))
 
 while True:
     try:
-        connection.send(build_packet(joystick))
-        response_data = connection.recv(1024)
-        time.sleep(0.05)
+        packet = build_packet(joystick)
+        connection.send(packet)
+        response_data = connection.recv(ControllerPacket.size())
+
+        if response_data != packet:
+            print("Invalid server reply!")
+
+        time.sleep(SEND_INTERVAL)
     except KeyboardInterrupt:
         connection.close()
         joystick.__del__()

@@ -76,3 +76,15 @@ class ControllerPacket:
         self.camera_pitch = self._from_int(raw_data[1])
         self.robot_yaw = self._from_int(raw_data[2])
         self._robot_speed = self._from_int(raw_data[3])
+
+    @staticmethod
+    def size():
+        # A proper way is needed to determine what can be the maximum size of the packet while using pickle.
+        # The following value is a bit bigger than necessary to stay safe
+        return 32
+
+    def __str__(self):
+        return "Camera yaw: {}\nCamera pitch: {}, Robot yaw: {}, Robot speed: {}".format(self.camera_yaw,
+                                                                                         self.camera_pitch,
+                                                                                         self.robot_yaw,
+                                                                                         self.robot_speed)

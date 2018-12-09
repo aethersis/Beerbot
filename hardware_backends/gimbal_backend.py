@@ -55,8 +55,8 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         wiringpi.pwmSetClock(192)
         wiringpi.pwmSetRange(2000)
 
-    def _valueToPwm(self, value: float):
-        return 50 + 100 * (value + 1.0)
+    def _valueToPwm(self, value: float) -> int:
+        return int(50 + 100 * (value + 1.0))
 
     @property
     def pitch(self):

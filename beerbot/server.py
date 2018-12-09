@@ -1,8 +1,11 @@
 import argparse
 import socket
 from threading import Thread
-
 import os
+
+import sys
+
+sys.path.append(os.getcwd())
 
 from beerbot.hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend, AbstractGimbalBackend
 from beerbot.server_packet import ControllerPacket
@@ -24,6 +27,9 @@ class RobotServer:
                 try:
                     packet = ControllerPacket(data_received)
                     self._client_socket.send(data_received)
+                    self._gimbal_backend.yaw = packet.camera_yaw
+                    self._gimbal_backend.pitch = packet.camera_pitch
+
                     print(packet)
                 except Exception:
                     print("Data transmission error!")
@@ -38,6 +44,8 @@ class RobotServer:
             self._gimbal_backend = DummyGimbalBackend()
 
     def __init__(self, host: str, port: int):
+        self._initialize_backend()
+
         self._client_socket = None
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -46,8 +54,6 @@ class RobotServer:
 
         self._updater = Thread(target=self._handle_connection)
         self._updater.start()
-
-        self._gimbal_backend = AbstractGimbalBackend()
 
 
 parser = argparse.ArgumentParser(description='Connect to the robot and send control commands.')

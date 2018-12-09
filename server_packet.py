@@ -80,7 +80,11 @@ class ControllerPacket:
         return 32
 
     def __str__(self):
-        return "Camera yaw: {}\nCamera pitch: {}, Robot yaw: {}, Robot speed: {}".format(self.camera_yaw,
-                                                                                         self.camera_pitch,
-                                                                                         self.robot_yaw,
-                                                                                         self.robot_speed)
+        return "Camera yaw: {}\n" \
+               "Camera pitch: {}\n" \
+               "Robot yaw: {}\n" \
+               "Robot speed: {}\n".\
+                format(self.camera_yaw,
+                       self.camera_pitch,
+                       self.robot_yaw,
+                       self.robot_speed)

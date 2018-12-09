@@ -26,16 +26,22 @@ class RobotServer:
                     self._gimbal_backend.pitch = packet.camera_pitch
 
                     print(packet)
+                    self._clear_screen()
                 except Exception as e:
                     print("Data transmission error: " + e.__str__())
                     self._fail_safe_mode()
             else:
                 self._fail_safe_mode()
 
+    def _clear_screen(self):
+        os.system(self._clear_screen_command)
+
     def _initialize_backend(self):
         if is_raspberry_pi():  # assuming ARM is Raspberry Pi
+            self._clear_screen_command = 'cls'
             self._gimbal_backend = SG90ServoGimbalBackend()
         else:
+            self._clear_screen_command = 'clear'
             self._gimbal_backend = DummyGimbalBackend()
 
     def __init__(self, host: str, port: int):

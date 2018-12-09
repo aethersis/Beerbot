@@ -3,8 +3,7 @@ import argparse
 import socket
 import sys
 
-from beerbot.hardware_backends.abstract_backend import AbstractControllerBackend
-from beerbot.hardware_backends.joystick_backend import JoystickBackend
+from beerbot.hardware_backends.joystick_backend import *
 from beerbot.server_packet import ControllerPacket
 
 SEND_INTERVAL = 0.05  # send control signal every 50ms (20 fps)
@@ -24,7 +23,7 @@ parser.add_argument('host', metavar='host', type=str, help='server IP or hostnam
 parser.add_argument('port', metavar='port', type=int, help='server port')
 args = parser.parse_args()
 
-joystick = JoystickBackend()
+joystick = GenesysP65Backend()
 
 connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connection.connect((args.host, args.port))

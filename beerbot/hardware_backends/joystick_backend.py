@@ -1,10 +1,29 @@
 from threading import Thread
+from abc import *
 import pygame
 
-from beerbot.hardware_backends.abstract_backend import AbstractControllerBackend
+from beerbot.utilities import clamp
 
 
-class JoystickBackend(AbstractControllerBackend):
+class AbstractControllerBackend(ABC):
+    @abstractproperty
+    def left_yaw(self):
+        return 0
+
+    @abstractproperty
+    def left_pitch(self):
+        return 0
+
+    @abstractproperty
+    def right_yaw(self):
+        return 0
+
+    @abstractproperty
+    def right_pitch(self):
+        return 0
+
+
+class GenesysP65Backend(AbstractControllerBackend):
     def __init__(self, joystick_id=0, left_yaw_axis_id=0,
                  left_pitch_axis_id=1, right_yaw_axis_id=4, right_pitch_axis_id=3):
         self._axis_0_yaw = left_yaw_axis_id
@@ -29,16 +48,12 @@ class JoystickBackend(AbstractControllerBackend):
     def __del__(self):
         self._finished = True
 
-    @staticmethod
-    def _clamp(value, range_from, range_to):
-        return max(min(value, range_to), range_from)
-
     def _read_joystick(self):
         while not self._finished:
             event = pygame.event.wait()
             if event.type == pygame.JOYAXISMOTION:
                 e = event.dict
-                value = self._clamp(e['value'], -1.0, 1.0)
+                value = clamp(e['value'])
                 if e['axis'] == self._axis_0_yaw:
                     self._left_yaw = value
                 elif e['axis'] == self._axis_1_yaw:

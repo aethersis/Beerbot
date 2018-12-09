@@ -1,4 +1,5 @@
 import pickle
+from beerbot.utilities import validate_value
 
 
 class ControllerPacket:
@@ -21,18 +22,13 @@ class ControllerPacket:
     def _to_int(self, value: float) -> int:
         return int(value * self._resolution)
 
-    @staticmethod
-    def _validate_value(value: float, name: str):
-        if not -1.0 <= value <= 1.0:
-            raise ValueError("{} must be in range from -1 to 1".format(name))
-
     @property
     def camera_yaw(self):
         return self._camera_yaw
 
     @camera_yaw.setter
     def camera_yaw(self, value: float):
-        self._validate_value(value, 'Camera yaw')
+        validate_value(value, 'Camera yaw')
         self._camera_yaw = value
         
     @property
@@ -41,7 +37,7 @@ class ControllerPacket:
 
     @camera_pitch.setter
     def camera_pitch(self, value: float):
-        self._validate_value(value, 'Camera pitch')
+        validate_value(value, 'Camera pitch')
         self._camera_pitch = value
         
     @property
@@ -50,7 +46,7 @@ class ControllerPacket:
 
     @robot_yaw.setter
     def robot_yaw(self, value: float):
-        self._validate_value(value, 'Robot yaw')
+        validate_value(value, 'Robot yaw')
         self._robot_yaw = value
     
     @property
@@ -59,7 +55,7 @@ class ControllerPacket:
 
     @robot_speed.setter
     def robot_speed(self, value: float):
-        self._validate_value(value, 'Robot speed')
+        validate_value(value, 'Robot speed')
         self._robot_speed = value
 
     def serialize(self) -> bytes:

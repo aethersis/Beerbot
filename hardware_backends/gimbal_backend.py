@@ -49,14 +49,13 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         self._pitch_pin = pitch_pin
 
         wiringpi.wiringPiSetupGpio()
-        wiringpi.pinMode(yaw_pin, wiringpi.GPIO.PWM_OUTPUT)
-        wiringpi.pinMode(pitch_pin, wiringpi.GPIO.PWM_OUTPUT)
-        wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
-        wiringpi.pwmSetClock(192)
-        wiringpi.pwmSetRange(2000)
+        wiringpi.pinMode(yaw_pin, wiringpi.GPIO.OUTPUT)
+        wiringpi.pinMode(pitch_pin, wiringpi.GPIO.OUTPUT)
+        wiringpi.softPwmCreate(yaw_pin, 50, 100)
+        wiringpi.softPwmCreate(pitch_pin, 50, 100)
 
     def _valueToPwm(self, value: float) -> int:
-        return int(50 + 100 * (value + 1.0))
+        return int(100 * (value + 1.0)/2.0)
 
     @property
     def pitch(self):

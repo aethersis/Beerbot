@@ -3,8 +3,8 @@ import socket
 from threading import Thread
 
 from hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
-from server_packet import ControllerPacket
-from utilities import *
+from common.server_packet import ControllerPacket
+from common.utilities import *
 
 
 class RobotServer:
@@ -25,8 +25,8 @@ class RobotServer:
                     self._gimbal_backend.yaw = packet.camera_yaw
                     self._gimbal_backend.pitch = packet.camera_pitch
 
-                    print(packet)
-                    self._clear_screen()
+                    #print(packet)
+                    #self._clear_screen()
                 except Exception as e:
                     print("Data transmission error: " + e.__str__())
                     self._fail_safe_mode()

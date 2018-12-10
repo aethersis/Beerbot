@@ -1,6 +1,6 @@
 import unittest
 
-from server_packet import ControllerPacket
+from common.server_packet import ControllerPacket
 
 
 class TestServerPacket(unittest.TestCase):

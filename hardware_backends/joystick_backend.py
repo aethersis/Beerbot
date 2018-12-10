@@ -2,7 +2,7 @@ from threading import Thread
 from abc import *
 import pygame
 
-from utilities import clamp
+from common.utilities import clamp
 
 
 class AbstractControllerBackend(ABC):

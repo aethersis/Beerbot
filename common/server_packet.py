@@ -1,5 +1,5 @@
 import pickle
-from utilities import validate_value
+from common.utilities import validate_value
 
 
 class ControllerPacket:

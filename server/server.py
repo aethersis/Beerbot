@@ -3,8 +3,8 @@ import socket
 from threading import Thread
 
 from hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
-from server_packet import ControllerPacket
-from utilities import *
+from common.server_packet import ControllerPacket
+from common.utilities import *
 
 
 class RobotServer:

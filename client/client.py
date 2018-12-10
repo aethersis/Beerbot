@@ -4,7 +4,7 @@ import socket
 import sys
 
 from hardware_backends.joystick_backend import *
-from server_packet import ControllerPacket
+from common.server_packet import ControllerPacket
 
 SEND_INTERVAL = 0.05  # send control signal every 50ms (20 fps)
 
@@ -15,6 +15,7 @@ def build_packet(controller_backend: AbstractControllerBackend) -> bytes:
     packet.camera_pitch = controller_backend.left_pitch
     packet.robot_yaw = controller_backend.right_yaw
     packet.robot_speed = controller_backend.right_pitch
+    print(packet)
     return packet.serialize()
 
 

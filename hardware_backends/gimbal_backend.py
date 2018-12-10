@@ -42,23 +42,17 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         if not is_raspberry_pi():
             raise Exception("This class works only on Raspberry Pi")
 
-        import wiringpi
+        from gpiozero import AngularServo
         self._yaw = 0.0
         self._pitch = 0.0
-        self._yaw_pin = yaw_pin
-        self._pitch_pin = pitch_pin
+        self._angle_min = -90
+        self._angle_max = 90
         
-        wiringpi.wiringPiSetupGpio()
-        wiringpi.pinMode(yaw_pin, wiringpi.GPIO.OUTPUT)
-        wiringpi.pinMode(pitch_pin, wiringpi.GPIO.OUTPUT)
-        
-        # 400 gives 1/(400*100us) = 100Hz PWM
-        #15 is 15*100us = 1.5ms pulse (SG90 takes from 1ms to 2ms)
-        wiringpi.softPwmCreate(yaw_pin, 15, 200) 
-        wiringpi.softPwmCreate(pitch_pin, 15, 200)
+        self._yaw_servo = AngularServo(yaw_pin, min_angle=self._angle_min, max_angle=self._angle_max)
+        self._pitch_servo = AngularServo(pitch_pin, min_angle=self._angle_min, max_angle=self._angle_max)
 
-    def _valueToPwm(self, value: float) -> int:
-        return int(10.0 * value + 15)
+    def _valueToAngle(self, value: float) -> int:
+        return int((((value - (-1.0)) * (self._angle_max - self._angle_min)) / 2.0) + self._angle_max)
 
     @property
     def pitch(self):
@@ -70,16 +64,12 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
 
     @yaw.setter
     def yaw(self, value: float):
-        import wiringpi
         validate_value(value, 'Camera yaw')
         self._yaw = value
-        yaw_pwm = self._valueToPwm(value)
-        wiringpi.softPwmWrite(self._yaw_pin, yaw_pwm)
+        self._yaw_servo.angle = self._valueToAngle(value)
 
     @pitch.setter
     def pitch(self, value: float):
-        import wiringpi
         validate_value(value, 'Camera pitch')
         self._pitch = value
-        pitch_pwm = self._valueToPwm(value)
-        wiringpi.softPwmWrite(self._pitch_pin, pitch_pwm)
+        self._pitch_servo.angle = self._valueToAngle(value)

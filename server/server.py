@@ -2,6 +2,7 @@ import argparse
 import socket
 from threading import Thread
 
+from hardware_backends.chassis_backend import HBridgeMotorizedChassis, DummyChassisBackend
 from hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
 from common.server_packet import ControllerPacket
 from common.utilities import *
@@ -24,9 +25,8 @@ class RobotServer:
                     self._client_socket.send(data_received)
                     self._gimbal_backend.yaw = packet.camera_yaw
                     self._gimbal_backend.pitch = packet.camera_pitch
-
-                    #print(packet)
-                    #self._clear_screen()
+                    self._chassis_backend.yaw = packet.robot_yaw
+                    self._chassis_backend.speed = packet.robot_speed
                 except Exception as e:
                     print("Data transmission error: " + e.__str__())
                     self._fail_safe_mode()
@@ -40,9 +40,11 @@ class RobotServer:
         if is_raspberry_pi():  # assuming ARM is Raspberry Pi
             self._clear_screen_command = 'clear'
             self._gimbal_backend = SG90ServoGimbalBackend()
+            self._chassis_backend = HBridgeMotorizedChassis()
         else:
             self._clear_screen_command = 'cls'
             self._gimbal_backend = DummyGimbalBackend()
+            self._chassis_backend = DummyChassisBackend()
 
     def __init__(self, host: str, port: int):
         self._initialize_backend()

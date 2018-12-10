@@ -28,12 +28,12 @@ class DummyGimbalBackend(AbstractGimbalBackend):
 
     @yaw.setter
     def yaw(self, value: float):
-        self._validate_value(value, 'Camera yaw')
+        validate_value(value, 'Camera yaw')
         self._yaw = value
 
     @pitch.setter
     def pitch(self, value: float):
-        self._validate_value(value, 'Camera pitch')
+        validate_value(value, 'Camera pitch')
         self._pitch = value
 
 

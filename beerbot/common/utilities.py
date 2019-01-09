@@ -1,6 +1,5 @@
 import os
 
-
 def clamp(value, range_from=-1.0, range_to=1.0):
     return max(min(value, range_to), range_from)
 

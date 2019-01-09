@@ -1,6 +1,6 @@
 from abc import ABC, abstractproperty
 
-from common.utilities import validate_value, is_raspberry_pi
+from beerbot.common.utilities import validate_value, is_raspberry_pi
 
 
 class AbstractChassisBackend(ABC):

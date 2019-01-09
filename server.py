@@ -2,10 +2,10 @@ import argparse
 import socket
 from threading import Thread
 
-from hardware_backends.chassis_backend import HBridgeMotorizedChassis, DummyChassisBackend
-from hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
-from common.server_packet import ControllerPacket
-from common.utilities import *
+from beerbot.hardware_backends.chassis_backend import HBridgeMotorizedChassis, DummyChassisBackend
+from beerbot.hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
+from beerbot.common.server_packet import ControllerPacket
+from beerbot.common.utilities import *
 
 
 class RobotServer:

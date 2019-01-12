@@ -11,3 +11,9 @@ def validate_value(value: float, name: str, range_from=-1.0, range_to=1.0):
 
 def is_raspberry_pi() -> bool:
     return os.uname()[4][:3] == 'arm'
+
+
+def remap(value, old_min, old_max, new_min, new_max):
+    old_range = (old_max - old_min)
+    new_range = (new_max - new_min)
+    return (((value - old_min) * new_range) / old_range) + new_min

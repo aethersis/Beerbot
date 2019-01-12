@@ -38,7 +38,7 @@ class DummyGimbalBackend(AbstractGimbalBackend):
 
 
 class SG90ServoGimbalBackend(AbstractGimbalBackend):
-    def __init__(self, yaw_pin=20, pitch_pin=21):
+    def __init__(self, yaw_pin=6, pitch_pin=5):
         if not is_raspberry_pi():
             raise Exception("This class works only on Raspberry Pi")
 
@@ -70,3 +70,4 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         validate_value(value, 'Camera pitch')
         self._pitch = value
         self._pitch_servo.angle = remap(value, -1.0, 1.0, self._angle_min, self._angle_max)
+

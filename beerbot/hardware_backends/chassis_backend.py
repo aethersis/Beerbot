@@ -1,6 +1,6 @@
 from abc import ABC, abstractproperty
 
-from beerbot.common.utilities import validate_value, is_raspberry_pi
+from beerbot.common.utilities import validate_value, is_raspberry_pi, clamp
 
 
 class AbstractChassisBackend(ABC):
@@ -50,29 +50,31 @@ class HBridgeMotorizedChassis(AbstractChassisBackend):
         self._forward_left = OutputDevice(3)
         self._backward_left = OutputDevice(4)
 
-        self._forward_right = OutputDevice(17)
-        self._backward_right = OutputDevice(27)
+        self._forward_right = OutputDevice(27)
+        self._backward_right = OutputDevice(17)
         self._pwm_right = PWMOutputDevice(22, frequency=1000)
 
     def _set_speeds(self):
         dead_zone = 0.1
-        self._pwm_left.value = abs(self._yaw)
-        self._pwm_right.value = abs(self._speed)
+        left_track = clamp(self._speed - self._yaw)
+        right_track = clamp(self._speed + self._yaw)
+        self._pwm_left.value = abs(left_track)
+        self._pwm_right.value = abs(right_track)
 
-        if self._yaw > dead_zone:
+        if left_track > dead_zone:
             self._forward_left.on()
             self._backward_left.off()
-        elif self._yaw < -dead_zone:
+        elif left_track < -dead_zone:
             self._forward_left.off()
             self._backward_left.on()
         else:
             self._forward_left.off()
             self._backward_left.off()
 
-        if self._speed > dead_zone:
+        if right_track > dead_zone:
             self._forward_right.on()
             self._backward_right.off()
-        elif self._speed < -dead_zone:
+        elif right_track < -dead_zone:
             self._forward_right.off()
             self._backward_right.on()
         else:

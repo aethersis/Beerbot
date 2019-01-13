@@ -101,10 +101,10 @@ class KeyboardBackend extends InputBackend {
     super();
 
     this.axes = [
-      new KeyAxisHandler(['a', 'd']),
-      new KeyAxisHandler(['w', 's']),
       new KeyAxisHandler(['ArrowLeft', 'ArrowRight']),
       new KeyAxisHandler(['ArrowUp', 'ArrowDown']),
+      new KeyAxisHandler(['a', 'd']),
+      new KeyAxisHandler(['w', 's']),
     ];
 
     window.addEventListener('keydown', this.handleKeyEvent.bind(this));

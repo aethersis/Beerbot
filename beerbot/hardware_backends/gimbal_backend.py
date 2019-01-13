@@ -63,7 +63,7 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
     def yaw(self, value: float):
         validate_value(value, 'Camera yaw')
         self._yaw = value
-        self._yaw_servo.angle = remap(value, -1.0, 1.0, self._angle_min, self._angle_max)
+        self._yaw_servo.angle = -remap(value, -1.0, 1.0, self._angle_min, self._angle_max)
 
     @pitch.setter
     def pitch(self, value: float):

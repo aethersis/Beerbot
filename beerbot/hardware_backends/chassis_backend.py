@@ -47,11 +47,11 @@ class HBridgeMotorizedChassis(AbstractChassisBackend):
         self._speed = 0.0
 
         self._pwm_left = PWMOutputDevice(2, frequency=1000)
-        self._forward_left = OutputDevice(3)
-        self._backward_left = OutputDevice(4)
+        self._forward_left = OutputDevice(4)
+        self._backward_left = OutputDevice(3)
 
-        self._forward_right = OutputDevice(27)
-        self._backward_right = OutputDevice(17)
+        self._forward_right = OutputDevice(17)
+        self._backward_right = OutputDevice(27)
         self._pwm_right = PWMOutputDevice(22, frequency=1000)
 
     def _set_speeds(self):

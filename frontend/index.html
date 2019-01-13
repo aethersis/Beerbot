@@ -1,0 +1,33 @@
+<html>
+  <head>
+  <style>
+	body {
+		background: black;
+		margin: 0;
+		padding: 0;
+	}
+
+	.preview {
+		height: 100%;
+		display: block;
+		margin:0 auto;
+	}
+
+	#left, #right {
+		position: absolute;
+		top: 0; bottom: 0;
+		width: 50%;
+	}
+	#right {
+		right: 0;
+	}
+  </style>
+  </head>
+  <body>
+    <img src="/stream/video.mjpeg" class="preview" />
+    <div id="left"></div>
+    <div id="right"></div>
+    <script src="https://yoannmoinet.github.io/nipplejs/javascripts/nipplejs.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

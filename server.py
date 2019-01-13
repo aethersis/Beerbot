@@ -2,6 +2,9 @@ import argparse
 import socket
 from threading import Thread
 
+import websockets
+import asyncio
+
 from beerbot.hardware_backends.chassis_backend import HBridgeMotorizedChassis, DummyChassisBackend
 from beerbot.hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
 from beerbot.common.server_packet import ControllerPacket
@@ -33,6 +36,22 @@ class RobotServer:
             else:
                 self._fail_safe_mode()
 
+    async def _handle_websocket(self, websocket, path):
+        while True:
+            import json
+            try:
+                data = await asyncio.wait_for(websocket.recv(), timeout=1.0)
+                print("< {}".format(data))
+
+                payload = json.loads(data)
+
+                self._gimbal_backend.yaw = payload[0]
+                self._gimbal_backend.pitch = payload[1]
+                self._chassis_backend.yaw = payload[2]
+                self._chassis_backend.speed = payload[3]
+            except asyncio.TimeoutError:
+                self._chassis_backend.speed = 0
+
     def _clear_screen(self):
         os.system(self._clear_screen_command)
 
@@ -46,7 +65,7 @@ class RobotServer:
             self._gimbal_backend = DummyGimbalBackend()
             self._chassis_backend = DummyChassisBackend()
 
-    def __init__(self, host: str, port: int):
+    def __init__(self, host: str, port: int, wsport: int):
         self._initialize_backend()
 
         self._client_socket = None
@@ -58,10 +77,16 @@ class RobotServer:
         self._updater = Thread(target=self._handle_connection)
         self._updater.start()
 
+        start_server = websockets.serve(self._handle_websocket, host, wsport)
+
+        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_forever()
+
 
 parser = argparse.ArgumentParser(description='Connect to the robot and send control commands.')
 parser.add_argument('host', metavar='host', type=str, help='server IP or hostname')
 parser.add_argument('port', metavar='port', type=int, help='server port')
+parser.add_argument('wsport', metavar='wsport', type=int, help='websocket server port')
 args = parser.parse_args()
 
-server = RobotServer(args.host, args.port)
+server = RobotServer(args.host, args.port, args.wsport)

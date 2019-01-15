@@ -42,14 +42,14 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         if not is_raspberry_pi():
             raise Exception("This class works only on Raspberry Pi")
 
-        from gpiozero import AngularServo
+        import pigpio
         self._yaw = 0.0
         self._pitch = 0.0
-        self._angle_min = -90
-        self._angle_max = 90
-        
-        self._yaw_servo = AngularServo(yaw_pin, min_angle=self._angle_min, max_angle=self._angle_max)
-        self._pitch_servo = AngularServo(pitch_pin, min_angle=self._angle_min, max_angle=self._angle_max)
+        self._angle_min = 1000
+        self._angle_max = 2000
+        self._yaw_pin = yaw_pin
+        self._pitch_pin = pitch_pin
+
 
     @property
     def pitch(self):
@@ -62,12 +62,10 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
     @yaw.setter
     def yaw(self, value: float):
         validate_value(value, 'Camera yaw')
-        self._yaw = value
-        self._yaw_servo.angle = -remap(value, -1.0, 1.0, self._angle_min, self._angle_max)
+        pi.set_servo_pulsewidth(self._yaw_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
 
     @pitch.setter
     def pitch(self, value: float):
         validate_value(value, 'Camera pitch')
-        self._pitch = value
-        self._pitch_servo.angle = remap(value, -1.0, 1.0, self._angle_min, self._angle_max)
+        pi.set_servo_pulsewidth(self._pitch_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
 

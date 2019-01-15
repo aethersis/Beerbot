@@ -49,6 +49,7 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         self._angle_max = 2000
         self._yaw_pin = yaw_pin
         self._pitch_pin = pitch_pin
+        self._pi = pigpio.pi('soft', 8888)
 
 
     @property
@@ -62,10 +63,10 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
     @yaw.setter
     def yaw(self, value: float):
         validate_value(value, 'Camera yaw')
-        pi.set_servo_pulsewidth(self._yaw_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
+        self._pi.set_servo_pulsewidth(self._yaw_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
 
     @pitch.setter
     def pitch(self, value: float):
         validate_value(value, 'Camera pitch')
-        pi.set_servo_pulsewidth(self._pitch_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
+        self._pi.set_servo_pulsewidth(self._pitch_pin, remap(-value, -1.0, 1.0, self._angle_min, self._angle_max))
 

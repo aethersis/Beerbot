@@ -45,11 +45,11 @@ class SG90ServoGimbalBackend(AbstractGimbalBackend):
         import pigpio
         self._yaw = 0.0
         self._pitch = 0.0
-        self._angle_min = 1000
-        self._angle_max = 2000
+        self._angle_min = 1100
+        self._angle_max = 2100
         self._yaw_pin = yaw_pin
         self._pitch_pin = pitch_pin
-        self._pi = pigpio.pi('soft', 8888)
+        self._pi = pigpio.pi('127.0.0.1', 8666)
 
 
     @property

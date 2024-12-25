@@ -2,7 +2,7 @@ from threading import Thread
 from abc import *
 import pygame
 
-from beerbot.common.utilities import clamp
+from backend.common.utilities import clamp
 
 
 class AbstractControllerBackend(ABC):

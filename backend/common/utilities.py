@@ -1,4 +1,4 @@
-import os
+import platform
 
 def clamp(value, range_from=-1.0, range_to=1.0):
     return max(min(value, range_to), range_from)
@@ -10,7 +10,7 @@ def validate_value(value: float, name: str, range_from=-1.0, range_to=1.0):
 
 
 def is_raspberry_pi() -> bool:
-    return os.uname()[4][:3] == 'arm'
+    return "arm" in platform.platform()
 
 
 def remap(value, old_min, old_max, new_min, new_max):

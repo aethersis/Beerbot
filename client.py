@@ -3,8 +3,8 @@ import argparse
 import socket
 import sys
 
-from beerbot.hardware_backends.joystick_backend import *
-from beerbot.common.server_packet import ControllerPacket
+from backend.hardware_backends.joystick_backend import *
+from backend.common.server_packet import ControllerPacket
 
 SEND_INTERVAL = 0.05  # send control signal every 50ms (20 fps)
 

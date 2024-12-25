@@ -1,6 +1,6 @@
 import unittest
 
-from beerbot.common.server_packet import ControllerPacket
+from backend.common.server_packet import ControllerPacket
 
 
 class TestServerPacket(unittest.TestCase):

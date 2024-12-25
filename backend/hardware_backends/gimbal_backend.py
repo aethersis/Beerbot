@@ -1,6 +1,6 @@
 from abc import *
 
-from beerbot.common.utilities import is_raspberry_pi, validate_value, remap
+from backend.common.utilities import is_raspberry_pi, validate_value, remap
 
 
 class AbstractGimbalBackend(ABC):

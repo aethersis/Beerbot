@@ -1,5 +1,5 @@
 import pickle
-from beerbot.common.utilities import validate_value
+from backend.common.utilities import validate_value
 
 
 class ControllerPacket:

@@ -28,8 +28,8 @@ sudo reboot
 Make sure you're in the root folder of this repository.
 Install and configure mediamtx that provides low latency web streaming:
 ```
-mkdir streaming
-cd streaming
+mkdir mediamtx
+cd mediamtx
 wget https://github.com/bluenviron/mediamtx/releases/download/v1.10.0/mediamtx_v1.10.0_linux_arm64v8.tar.gz
 tar xzvf mediamtx_v1.10.0_linux_arm64v8.tar.gz
 ```

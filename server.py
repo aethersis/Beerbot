@@ -107,28 +107,12 @@ class RobotServer:
         # For the web browser websockets controls
         self.start(host, wsport)
 
-# Web server (frontend)
-flask_app = Flask(__name__, static_folder="frontend")
-
-
-@flask_app.route("/")
-def serve_index():
-    return send_from_directory(flask_app.static_folder, "index.html")
-
-
-@flask_app.route("/<path:filename>")
-def serve_static_files(filename):
-    return send_from_directory(flask_app.static_folder, filename)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Connect to the robot and send control commands.')
     parser.add_argument('host', metavar='host', type=str, help='server IP or hostname')
-    parser.add_argument('port', metavar='port', type=int, help='server port')
-    parser.add_argument('wsport', metavar='wsport', type=int, help='websocket server port')
+    parser.add_argument('--port', type=int, help='server port', default=4444)
+    parser.add_argument('--wsport', type=int, help='websocket server port', default=8000)
     args = parser.parse_args()
 
     server = RobotServer(args.host, args.port, args.wsport)
-
-    # Start the Flask server
-    flask_app.run(host="0.0.0.0", port=8000)

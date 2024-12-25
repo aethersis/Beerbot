@@ -26,6 +26,5 @@ setup(
     install_requires=[
         'pygame',
         'websockets',
-        'flask'
     ],
 )

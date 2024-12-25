@@ -6,16 +6,16 @@ from threading import Thread
 import websockets
 import asyncio
 
-from backend.hardware_backends.chassis_backend import HBridgeMotorizedChassis, DummyChassisBackend
-from backend.hardware_backends.gimbal_backend import SG90ServoGimbalBackend, DummyGimbalBackend
+from backend.hardware_backends.chassis_backend import PCA9685CarChassis, DummyChassisBackend
+from backend.hardware_backends.gimbal_backend import PCA9685GimbalBackend, DummyGimbalBackend
 from backend.common.server_packet import ControllerPacket
 from backend.common.utilities import *
+from backend.hardware_backends.pi_hats import PCA9685
 
 
 class RobotServer:
     def _fail_safe_mode(self):
-        # Todo: enter failsafe mode (stop the robot and all commands)
-        pass
+        self._chassis_backend.speed = 0
 
     def _handle_connection(self):
         while True:
@@ -51,7 +51,7 @@ class RobotServer:
                 self._chassis_backend.yaw = payload[2]
                 self._chassis_backend.speed = payload[3]
             except asyncio.TimeoutError:
-                self._chassis_backend.speed = 0
+                self._fail_safe_mode()
 
     def _clear_screen(self):
         os.system(self._clear_screen_command)
@@ -59,8 +59,9 @@ class RobotServer:
     def _initialize_backend(self):
         if is_raspberry_pi():  # assuming ARM is Raspberry Pi
             self._clear_screen_command = 'clear'
-            self._gimbal_backend = SG90ServoGimbalBackend()
-            self._chassis_backend = HBridgeMotorizedChassis()
+            self._hat = PCA9685()
+            self._gimbal_backend = PCA9685GimbalBackend(self._hat)
+            self._chassis_backend = PCA9685CarChassis(self._hat)
         else:
             self._clear_screen_command = 'cls'
             self._gimbal_backend = DummyGimbalBackend()
@@ -73,8 +74,10 @@ class RobotServer:
     def start(self, host, wsport):
         # Start the WebSocket server in an async context
         asyncio.run(self.start_websocket_server(host, wsport))
+        print(f"Listening on websocket port {wsport}")
 
     def __init__(self, host: str, port: int, wsport: int):
+        self._hat = None  # Optional Raspberry Pi hats
         self._initialize_backend()
 
         # This is to handle python client controls
@@ -83,6 +86,7 @@ class RobotServer:
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.bind((host, port))
         self._socket.listen(1)
+        print(f"Listening on socket port {port}")
 
         self._updater = Thread(target=self._handle_connection)
         self._updater.start()

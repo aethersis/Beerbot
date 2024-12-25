@@ -15,6 +15,9 @@ from backend.hardware_backends.pi_hats import PCA9685
 
 class RobotServer:
     def _fail_safe_mode(self):
+        self._gimbal_backend.yaw = 0
+        self._gimbal_backend.pitch = 0
+        self._chassis_backend.yaw = 0
         self._chassis_backend.speed = 0
 
     def _handle_connection(self):
@@ -58,11 +61,14 @@ class RobotServer:
 
     def _initialize_backend(self):
         if is_raspberry_pi():  # assuming ARM is Raspberry Pi
+            print("Raspberry Pi detected. Using real hardware.")
             self._clear_screen_command = 'clear'
             self._hat = PCA9685()
             self._gimbal_backend = PCA9685GimbalBackend(self._hat)
             self._chassis_backend = PCA9685CarChassis(self._hat)
+            self._fail_safe_mode()
         else:
+            print("Unknown hardware platform. Running dummy hardware.")
             self._clear_screen_command = 'cls'
             self._gimbal_backend = DummyGimbalBackend()
             self._chassis_backend = DummyChassisBackend()

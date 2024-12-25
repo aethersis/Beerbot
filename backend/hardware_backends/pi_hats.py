@@ -1,5 +1,5 @@
 import math
-from datetime import time
+import time
 
 from backend.common.utilities import is_raspberry_pi
 
@@ -34,6 +34,7 @@ class PCA9685:
         if self.debug:
             print("Reseting PCA9685")
         self.write(self.__MODE1, 0x00)
+        self.set_pwm_frequency(50)
 
     def write(self, reg, value):
         "Writes an 8-bit value to the specified register/address"

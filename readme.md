@@ -50,12 +50,32 @@ Note the spacebar indentations and make sure it looks the same on your screen!
 
 runOnInit: bash -c 'rpicam-vid -t 0 --camera 0 --nopreview --codec yuv420 --width 1280 --height 720 --inline --listen -o - | ffmpeg -f rawvideo -pix_fmt yuv420p -s:v 1280x720 -i /dev/stdin -c:v h264_v4l2m2m -b:v 0.5M -g 10 -keyint_min 1 -flags +low_delay -max_delay 0 -f rtsp rtsp://localhost:8554/cam1'
 
-Finally, install the required python packages:
+Finally, create a virtual environment from the repository root folder and install the required python packages:
 ```commandline
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 ### Run the server
+Every time you restart Raspberry Pi you will need to activate the virtual environment the code runs from.
+The reason it's like that is to keep python projects self-contained so that the packages they use and install 
+don't cause conflicts between projects.
+```
+source .venv/bin/activate
+```
+Once you do this, you should see `(venv)` to the left of the current path and username in the console.
 
+Finally you can run the server:
+```commandline
+python server.py <host> <port>
+```
+Where `<host>` and `<port>` should be replaced with your hostname or ip-address and port for websocket interface.
+For example for local streaming you can use 
+```commandline
+python server.py localhost 443
+```
+Once you do this, streaming and web interface should start.
+You should now be able to open the connection to the robot in your web browser
 ## Development
 The python backend was designed to support abstract hardware, so adding support to new Pi Hats or controls
 should be quite straightforward by implementing `AbstractChassisBackend` and `AbstractGimbalBackend` classes

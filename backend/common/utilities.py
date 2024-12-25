@@ -10,7 +10,7 @@ def validate_value(value: float, name: str, range_from=-1.0, range_to=1.0):
 
 
 def is_raspberry_pi() -> bool:
-    return "arm" or "rpi" in platform.platform()
+    return ("arm" or "rpi") in platform.platform()
 
 
 def remap(value, old_min, old_max, new_min, new_max):

@@ -5,6 +5,7 @@ from threading import Thread
 
 import websockets
 import asyncio
+from flask import Flask, send_from_directory
 
 from backend.hardware_backends.chassis_backend import PCA9685CarChassis, DummyChassisBackend
 from backend.hardware_backends.gimbal_backend import PCA9685GimbalBackend, DummyGimbalBackend
@@ -25,7 +26,13 @@ class RobotServer:
             if self._client_socket is None:
                 self._client_socket, self._client_address = self._socket.accept()
 
-            data_received = self._client_socket.recv(ControllerPacket.size())
+            data_received = None
+            try:
+                data_received = self._client_socket.recv(ControllerPacket.size())
+            except Exception as e:
+                print("Data transmission error: " + e.__str__())
+                self._fail_safe_mode()
+
             if data_received:
                 try:
                     packet = ControllerPacket(data_received)
@@ -100,6 +107,19 @@ class RobotServer:
         # For the web browser websockets controls
         self.start(host, wsport)
 
+# Web server (frontend)
+flask_app = Flask(__name__, static_folder="frontend")
+
+
+@flask_app.route("/")
+def serve_index():
+    return send_from_directory(flask_app.static_folder, "index.html")
+
+
+@flask_app.route("/<path:filename>")
+def serve_static_files(filename):
+    return send_from_directory(flask_app.static_folder, filename)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Connect to the robot and send control commands.')
@@ -109,3 +129,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     server = RobotServer(args.host, args.port, args.wsport)
+
+    # Start the Flask server
+    flask_app.run(host="0.0.0.0", port=8000)

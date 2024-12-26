@@ -49,6 +49,7 @@ class RobotServer:
                 self._fail_safe_mode()
 
     async def _handle_websocket(self, websocket, path):
+        print(f"Connection attempt on path: {path}")
         while True:
             try:
                 data = await asyncio.wait_for(websocket.recv(), timeout=1.0)
@@ -81,13 +82,16 @@ class RobotServer:
             self._chassis_backend = DummyChassisBackend()
 
     async def start_websocket_server(self, host, wsport):
-        start_server = websockets.serve(self._handle_websocket, host, wsport)
-        await start_server
+        try:
+            print(f"Attempting to bind WebSocket server to {host}:{wsport}")
+            start_server = websockets.serve(self._handle_websocket, host, wsport)
+            await start_server
+        except Exception as e:
+            print(f"Failed to start WebSocket server: {e}")
 
     def start(self, host, wsport):
         # Start the WebSocket server in an async context
         asyncio.run(self.start_websocket_server(host, wsport))
-        print(f"Listening on websocket port {wsport}")
 
     def __init__(self, host: str, port: int, wsport: int):
         self._hat = None  # Optional Raspberry Pi hats

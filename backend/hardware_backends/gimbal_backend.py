@@ -99,7 +99,7 @@ class PCA9685GimbalBackend(AbstractGimbalBackend):
     @yaw.setter
     def yaw(self, value: float):
         validate_value(value, 'Camera yaw')
-        self._hat.set_servo_pulse(self._yaw_channel, remap(value, -1.0, 1.0, 500, 2500))
+        self._hat.set_servo_pulse(self._yaw_channel, remap(-value, -1.0, 1.0, 500, 2500))
 
     @pitch.setter
     def pitch(self, value: float):

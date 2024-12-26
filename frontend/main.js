@@ -123,7 +123,7 @@ class KeyboardBackend extends InputBackend {
   }
 }
 
-const ws = new WebSocket('ws://' + location.host + '/control');
+const ws = new WebSocket('ws://' + location.hostname + ':9000');
 ws.onopen = (e) => {
   //ws.send('hello');
 };

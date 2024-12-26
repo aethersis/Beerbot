@@ -6,6 +6,7 @@ from threading import Thread
 import websockets
 import asyncio
 from flask import Flask, send_from_directory
+import json
 
 from backend.hardware_backends.chassis_backend import PCA9685CarChassis, DummyChassisBackend
 from backend.hardware_backends.gimbal_backend import PCA9685GimbalBackend, DummyGimbalBackend
@@ -49,7 +50,6 @@ class RobotServer:
 
     async def _handle_websocket(self, websocket, path):
         while True:
-            import json
             try:
                 data = await asyncio.wait_for(websocket.recv(), timeout=1.0)
                 print("< {}".format(data))
@@ -108,11 +108,31 @@ class RobotServer:
         self.start(host, wsport)
 
 
+app = Flask(__name__)
+
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('frontend', 'index.html')
+
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('frontend', path)
+
+
+def start_flask():
+    app.run(host='0.0.0.0', port=5000)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Connect to the robot and send control commands.')
     parser.add_argument('host', metavar='host', type=str, help='server IP or hostname')
     parser.add_argument('--port', type=int, help='server port', default=4444)
-    parser.add_argument('--wsport', type=int, help='websocket server port', default=8000)
+    parser.add_argument('--wsport', type=int, help='websocket server port', default=9000)
     args = parser.parse_args()
+
+    flask_thread = Thread(target=start_flask)
+    flask_thread.start()
 
     server = RobotServer(args.host, args.port, args.wsport)

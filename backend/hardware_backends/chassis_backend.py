@@ -46,7 +46,7 @@ class PCA9685CarChassis(AbstractChassisBackend):
     """
     from backend.hardware_backends.pi_hats import PCA9685
 
-    def __init__(self, pca9685hat: PCA9685, max_speed=0.25, yaw_channel=1, speed_channel=0):
+    def __init__(self, pca9685hat: PCA9685, max_speed=0.05, yaw_channel=1, speed_channel=0):
         """
         :param pca9685hat: instance of PCA9685 class to communicate with the Waveshare servo driver hat
         :param max_speed: maximum allowed speed from 0 to 1
@@ -58,7 +58,7 @@ class PCA9685CarChassis(AbstractChassisBackend):
 
         self._yaw = 0.0
         self._speed = 0.0
-        self._max_speed = 0.1
+        self._max_speed = max_speed
 
         self._hat = pca9685hat
         self._yaw_channel = yaw_channel
@@ -81,7 +81,7 @@ class PCA9685CarChassis(AbstractChassisBackend):
     @speed.setter
     def speed(self, value):
         validate_value(value, 'Platform speed')
-        self._speed = value * self._max_speed
+        self._speed = -value * self._max_speed
         self._hat.set_servo_pulse(self._speed_channel, remap(value, -1.0, 1.0, 500, 2500))
 
 

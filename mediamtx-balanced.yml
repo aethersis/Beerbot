@@ -16,13 +16,13 @@ logFile: mediamtx.log
 # Timeout of read operations.
 readTimeout: 1s
 # Timeout of write operations.
-writeTimeout: 0.1s
+writeTimeout: 0.2s
 # Size of the queue of outgoing packets.
 # A higher value allows to increase throughput, a lower value allows to save RAM.
 writeQueueSize: 256
 # Maximum size of outgoing UDP packets.
 # This can be decreased to avoid fragmentation on networks with a low UDP MTU.
-udpMaxPayloadSize: 256
+udpMaxPayloadSize: 512
 
 # Command to run when a client connects to the server.
 # This is terminated with SIGINT when a client disconnects from the server.
@@ -558,7 +558,7 @@ pathDefaults:
   # bit-depth and packing are optional.
   rpiCameraMode:
   # frames per second
-  rpiCameraFPS: 30
+  rpiCameraFPS: 60
   # Autofocus mode
   # values: auto, manual, continuous
   rpiCameraAfMode: continuous
@@ -589,7 +589,7 @@ pathDefaults:
   # Period between IDR frames
   rpiCameraIDRPeriod: 60
   # Bitrate
-  rpiCameraBitrate: 1000000
+  rpiCameraBitrate: 2000000
   # H264 profile
   rpiCameraProfile: main
   # H264 level

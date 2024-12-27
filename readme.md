@@ -28,27 +28,9 @@ sudo reboot
 Make sure you're in the root folder of this repository.
 Install and configure mediamtx that provides low latency web streaming:
 ```
-mkdir mediamtx
-cd mediamtx
 wget https://github.com/bluenviron/mediamtx/releases/download/v1.10.0/mediamtx_v1.10.0_linux_arm64v8.tar.gz
 tar xzvf mediamtx_v1.10.0_linux_arm64v8.tar.gz
 ```
-
-Next, copy the mediamtx config to the folder where mediamtx was installed.
-```
-cp mediamtx.yml streaming/mediamtx.yml
-```
-
-nano mediamtx.yml
-Scroll all the way down, comment out “all_others:” by adding # (so the line reads #all_others:
-Now under the line paths: paste the following
-  cam1:
-    runOnInit: bash -c 'rpicam-vid -t 0 --camera 0 --nopreview --codec yuv420 --width 1280 --height 720 --inline --listen -o - | ffmpeg -f rawvideo -pix_fmt yuv420p -s:v 1280x720 -i /dev/stdin -c:v libx264 -preset ultrafast -tune zerolatency -b:v 0.5M -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH'
-    runOnInitRestart: yes
-
-Note the spacebar indentations and make sure it looks the same on your screen!
-
-runOnInit: bash -c 'rpicam-vid -t 0 --camera 0 --nopreview --codec yuv420 --width 1280 --height 720 --inline --listen -o - | ffmpeg -f rawvideo -pix_fmt yuv420p -s:v 1280x720 -i /dev/stdin -c:v h264_v4l2m2m -b:v 0.5M -g 10 -keyint_min 1 -flags +low_delay -max_delay 0 -f rtsp rtsp://localhost:8554/cam1'
 
 Finally, create a virtual environment from the repository root folder and install the required python packages:
 ```commandline
@@ -56,10 +38,37 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-### Run the server
-Every time you restart Raspberry Pi you will need to activate the virtual environment the code runs from.
-The reason it's like that is to keep python projects self-contained so that the packages they use and install 
-don't cause conflicts between projects.
+
+## Running the software
+
+Once everything is installed, running the robot software consists of two components:
+1. Run the video streaming in one screen
+2. Run the robot server in another screen
+
+
+### Running the video stream
+Create a new screen by typing
+```commandline
+screen
+```
+and press enter. Accept the conditions by pressing spacebar.
+
+Now you can start streaming and choose between different profiles (there's a `mediamtx-balanced` as well as `mediamtx-low-latency.yml`file available)
+
+For example:
+```commandline
+./mediamtx mediamtx-balanced.yml
+```
+
+Finally, minimize the screen by pressing `ctrl+A`, releasing and then pressing `D` key.
+
+### Running the robot server
+Create a new screen by typing
+```commandline
+screen
+```
+
+Activate the virtual environment
 ```
 source .venv/bin/activate
 ```
@@ -67,15 +76,13 @@ Once you do this, you should see `(venv)` to the left of the current path and us
 
 Finally you can run the server:
 ```commandline
-python server.py <host> <port>
+python server.py
 ```
-Where `<host>` and `<port>` should be replaced with your hostname or ip-address and port for websocket interface.
-For example for local streaming you can use 
-```commandline
-python server.py localhost 443
-```
-Once you do this, streaming and web interface should start.
-You should now be able to open the connection to the robot in your web browser
+
+Congratulations! You should now be able to open the connection to the robot in your web browser and control it!
+
+Try http://<robot_ip>:5000 where `<robot_ip>` should be replaced with the IP address of the robot.
+
 ## Development
 The python backend was designed to support abstract hardware, so adding support to new Pi Hats or controls
 should be quite straightforward by implementing `AbstractChassisBackend` and `AbstractGimbalBackend` classes

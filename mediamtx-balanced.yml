@@ -698,7 +698,7 @@ pathDefaults:
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
   cam1:
-    runOnInit: bash -c 'rpicam-vid -t 0 --camera 0 --nopreview --codec yuv420 --width 1280 --height 720 --inline --listen -o - | ffmpeg -f rawvideo -pix_fmt yuv420p -s:v 1280x720 -i /dev/stdin -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1M -bufsize 0 -g 1 -flags +low_delay -max_delay 0 -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH'
+    runOnInit: bash -c 'rpicam-vid -t 0 --camera 0 --nopreview --codec yuv420 --width 1280 --height 720 --inline --listen -o - | ffmpeg -f rawvideo -pix_fmt yuv420p -s:v 1280x720 -i /dev/stdin -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1M -bufsize 1M -g 1 -flags +low_delay -max_delay 0 -crf 28 -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH'
     runOnInitRestart: yes
 
   # example:

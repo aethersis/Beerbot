@@ -7,7 +7,7 @@ from functools import partial
 
 from flask import Flask, send_from_directory
 
-from backend.common.utilities import is_raspberry_pi
+from backend.common.utilities import is_raspberry_pi, remap
 from backend.hardware_backends.chassis_backend import DummyChassisBackend, PCA9685CarChassis
 from backend.hardware_backends.gimbal_backend import DummyGimbalBackend, PCA9685GimbalBackend
 from backend.hardware_backends.pi_hats import PCA9685
@@ -55,7 +55,13 @@ class RobotServer:
                 self._gimbal_backend.yaw = payload[0]
                 self._gimbal_backend.pitch = payload[1]
                 self._chassis_backend.yaw = payload[2]
-                self._chassis_backend.speed = payload[3]
+                speed = payload[3]
+                if speed < -0.1:
+                    self._chassis_backend.speed = remap(speed, -1, 0, -1, -0.25)
+                elif speed > 0.1:
+                    self._chassis_backend.speed = remap(speed, 0, 1, 0.25, 1)
+                else:
+                    self._chassis_backend.speed =0
 
                 # Echo a response (optional)
                 response = {"status": "received"}

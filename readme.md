@@ -1,7 +1,8 @@
 # What is Beerbot?
 In short, it's a universal robot platform that lets you do the following:
 - Control the robot remotely over WLAN or the Internet using a keyboard or gamepad
-- See low latency livestream and control the robot using a web browser
+- View the low latency (100-200ms over WiFi!) WebRTC livestream and control the robot using a web browser 
+(works best with Chromium/Chrome and its derivatives)
 
 This project was originally created to have a robotic tank platform with a fridge that could drive around
 and serve beer. However, thanks to its simple and modular design, it was transformed to support various

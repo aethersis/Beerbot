@@ -1,5 +1,5 @@
 from abc import ABC, abstractproperty
-
+import math
 from backend.common.utilities import validate_value, is_raspberry_pi, clamp, remap
 
 
@@ -81,7 +81,12 @@ class PCA9685CarChassis(AbstractChassisBackend):
     @speed.setter
     def speed(self, value):
         validate_value(value, 'Platform speed')
-        self._speed = -value * self._max_speed
+        multiplier = 1.4 * math.sin(math.fabs(3.1415*self._yaw)) + 1.0
+        self._speed = -value * self._max_speed * multiplier
+        if self._speed > self._max_speed:
+            self._speed = self._max_speed
+        if self._speed < -self._max_speed:
+            self._speed = -self._max_speed
         self._hat.set_servo_pulse(self._speed_channel, remap(self._speed, -1.0, 1.0, 500, 2500))
 
 
